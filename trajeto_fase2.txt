@@ -1,0 +1,1 @@
+ST1 -> U -> N -> E -> F -> B -> F -> G -> H -> I -> J -> K -> J -> I -> ST2 -> M -> L -> M -> T -> AC -> AG

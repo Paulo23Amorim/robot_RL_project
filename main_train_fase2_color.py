@@ -1,35 +1,23 @@
-from envs.robot_factory_env import RobotFactoryEnv
-from agents.q_learning_agent import QLearningAgent
+from envs.robot_factory_env_fase_2_color import RobotFactoryEnvFase2Color
 from agents.agent_factory import create_agent_for_env
 import matplotlib.pyplot as plt
 import os
-import random
 
 RENDER = False
 N_EPISODES = 20000
 MAX_STEPS = 100
-EPSILON_START = 1.0
-EPSILON_DECAY = 0.99999
-EPSILON_MIN = 0.01
 
-env = RobotFactoryEnv()
-n_states = env.observation_space.nvec[0]
-n_package_states = env.observation_space.nvec[1]
-n_actions = env.action_space.n
-
-agent, q_table_path = create_agent_for_env(env, fase="fase1")
-
-if os.path.exists("q_table_fase1.npy"):
-    os.remove("q_table_fase1.npy")
+env = RobotFactoryEnvFase2Color()
+agent, q_table_path = create_agent_for_env(env, fase="fase2_color")
 
 rewards_per_episode = []
 
-#treino
 for episode in range(N_EPISODES):
     state, _ = env.reset()
     done = False
     total_reward = 0
     step_counter = 0
+    
 
     if RENDER:
         plt.figure(figsize=(13, 10))
@@ -52,16 +40,16 @@ for episode in range(N_EPISODES):
 
     agent.decay_epsilon()
     rewards_per_episode.append(total_reward)
-    print(f"📦 Episódio {episode+1} → Recompensa: {total_reward:.2f}, passos: {step_counter}, ε: {agent.epsilon:.3f}")
+    print(f"📦 Episódio {episode + 1} → Recompensa: {total_reward:.2f}, passos: {step_counter}, ε: {agent.epsilon:.3f}")
 
-agent.save("q_table_fase1.npy")
+agent.save(q_table_path)
 
 plt.ioff()
 plt.figure()
 plt.plot(rewards_per_episode)
 plt.xlabel("Episódio")
 plt.ylabel("Recompensa total")
-plt.title("Treino Fase 1 (caixa azul)")
+plt.title("Treino Fase 2 (com cor da peça)")
 plt.grid(True)
-plt.savefig("q_learning_fase1_rewards.png")
+plt.savefig("q_learning_fase2_color_rewards.png")
 plt.show()

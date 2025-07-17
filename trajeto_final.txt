@@ -1,1 +1,1 @@
-ST1 -> U -> N -> E -> F -> G -> C -> G -> H -> I -> ST2 -> M -> T -> AC -> AG
+ST1 -> U -> N -> E -> A -> E -> F -> G -> H -> I -> J -> Q -> Y -> Z -> W -> AD -> W -> Z -> Y -> Q -> J -> I -> H -> G -> F -> B -> F -> G -> H -> I -> J -> Q -> Y -> Z -> W -> AA -> AE -> AA -> AB -> AC -> T -> M -> ST2 -> I -> H -> G -> C -> G -> H -> I -> J -> Q -> Y -> Z -> W -> AA -> AB -> AF -> AB -> AC -> T -> M -> ST2 -> I -> H -> D -> H -> I -> ST2 -> M -> T -> AC -> AG
