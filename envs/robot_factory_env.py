@@ -1,6 +1,8 @@
 import gymnasium as gym
 from gymnasium import spaces
 from graph.graph_data import graph
+from graph.visualgraph import pos
+
 
 class RobotFactoryEnv(gym.Env):
     def __init__(self, start_node='ST1'):
@@ -22,7 +24,11 @@ class RobotFactoryEnv(gym.Env):
         self.entregas = [('A', 'AD'), ('B', 'AE'), ('C', 'AF'), ('D', 'AG')]
         self.entrega_atual = 0
 
+        self.tempo_total = 0
+        self.sucesso = False
+        self.last_nodes_curvas = []
 
+        
         self.delivered_count = 0
         self.packages_done = set()
 
@@ -32,12 +38,35 @@ class RobotFactoryEnv(gym.Env):
         self.last_nodes = []
         self.visit_count = {}
 
+    def tipo_curva(self, n1, n2, n3):
+        if n1 not in pos or n2 not in pos or n3 not in pos:
+            return "desconhecido"
+
+        x1, y1 = pos[n1]
+        x2, y2 = pos[n2]
+        x3, y3 = pos[n3]
+
+        v1 = (x2 - x1, y2 - y1)
+        v2 = (x3 - x2, y3 - y2)
+
+        cross = v1[0] * v2[1] - v1[1] * v2[0]
+        dot = v1[0] * v2[0] + v1[1] * v2[1]
+
+        if dot > 0 and cross == 0:
+            return "linear"
+        elif dot < 0 and cross == 0:
+            return "curva_180"
+        else:
+            return "curva_90"
+
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_node = self.start_node
         self.has_package = False
         self.entrega_atual = 0
         self.delivered_count = 0
+        self.tempo_total = 0
+        self.sucesso = False
         self.packages_done = set()
         self.last_nodes = []
         self.visit_count = {}
@@ -57,6 +86,23 @@ class RobotFactoryEnv(gym.Env):
 
         next_node, weight = neighbors[action]
         self.current_node = next_node
+        
+        # Converter mm para cm e calcular tempo a 12 cm/s
+        distancia_cm = weight / 100.0
+        tempo_movimento = distancia_cm / 12
+        self.tempo_total += tempo_movimento
+        
+        # Analisar curva com base em 3 nós
+        self.last_nodes_curvas.append(self.current_node)
+        if len(self.last_nodes_curvas) > 3:
+            self.last_nodes_curvas.pop(0)
+
+        if len(self.last_nodes_curvas) == 3:
+            tipo = self.tipo_curva(self.last_nodes_curvas[0], self.last_nodes_curvas[1], self.last_nodes_curvas[2])
+            if tipo == "curva_90":
+                self.tempo_total += 2
+            elif tipo == "curva_180":
+                self.tempo_total += 4
 
         reward = -weight / 1000.0 if not self.has_package else -weight / 1500.0
 
@@ -80,6 +126,7 @@ class RobotFactoryEnv(gym.Env):
         # Tentativa de pegar
         if not self.has_package and self.current_node == pickup:
             self.has_package = True
+            self.tempo_total += 3  # Tempo de carregar a peça
             reward += 5
             print(f"📦 Pegou caixa no armazém {pickup}")
 
@@ -92,6 +139,8 @@ class RobotFactoryEnv(gym.Env):
             print(f"📤 Entregou caixa em {entrega}")
             self.has_package = False
             self.entrega_atual += 1
+            self.tempo_total += 3  # Tempo de carregar a peça
+            self.sucesso = True
 
             if self.entrega_atual >= len(self.entregas):
                 done = True  # concluiu todas as entregas

@@ -1,8 +1,13 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from envs.robot_factory_env import RobotFactoryEnv
 from agents.q_learning_agent import QLearningAgent
 from agents.agent_factory import create_agent_for_env
 from graph.visualgraph import render_grafo
 import matplotlib.pyplot as plt
+
 
 RENDER = True
 MAX_STEPS = 100
@@ -14,7 +19,7 @@ n_package_states = env.observation_space.nvec[1]
 n_actions = env.action_space.n
 
 agent, q_table_path = create_agent_for_env(env, fase="fase1")
-agent.load("q_table_fase1.npy")  
+agent.load("fase1/q_table_fase1.npy")  
 agent.epsilon = 0  
 
 state, _ = env.reset()
@@ -41,6 +46,8 @@ while not done and step_counter < MAX_STEPS:
 print(f"Recompensa final: {total_reward:.2f}")
 print(f"Trajeto final ({len(trajectory)} passos):")
 print(" -> ".join(trajectory))
+print(f"⏱️ Tempo total do episódio: {env.tempo_total:.2f} segundos")
 
-with open("trajeto_final.txt", "w") as f:
+
+with open("fase1/trajeto_final.txt", "w") as f:
     f.write(" -> ".join(trajectory))

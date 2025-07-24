@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from envs.robot_factory_env import RobotFactoryEnv
 from agents.q_learning_agent import QLearningAgent
 from agents.agent_factory import create_agent_for_env
@@ -5,12 +9,10 @@ import matplotlib.pyplot as plt
 import os
 import random
 
+
 RENDER = False
-N_EPISODES = 20000
+N_EPISODES = 25000
 MAX_STEPS = 100
-EPSILON_START = 1.0
-EPSILON_DECAY = 0.99999
-EPSILON_MIN = 0.01
 
 env = RobotFactoryEnv()
 n_states = env.observation_space.nvec[0]
@@ -19,10 +21,12 @@ n_actions = env.action_space.n
 
 agent, q_table_path = create_agent_for_env(env, fase="fase1")
 
-if os.path.exists("q_table_fase1.npy"):
-    os.remove("q_table_fase1.npy")
+if os.path.exists("fase1/q_table_fase1.npy"):
+    os.remove("fase1/q_table_fase1.npy")
 
 rewards_per_episode = []
+tempo_por_ep = []
+tempo_sucesso_ep = []
 
 #treino
 for episode in range(N_EPISODES):
@@ -52,6 +56,10 @@ for episode in range(N_EPISODES):
 
     agent.decay_epsilon()
     rewards_per_episode.append(total_reward)
+    tempo_por_ep.append(env.tempo_total)
+    if env.sucesso:
+        tempo_sucesso_ep.append(env.tempo_total)
+
     print(f"📦 Episódio {episode+1} → Recompensa: {total_reward:.2f}, passos: {step_counter}, ε: {agent.epsilon:.3f}")
 
 agent.save("q_table_fase1.npy")
@@ -63,5 +71,23 @@ plt.xlabel("Episódio")
 plt.ylabel("Recompensa total")
 plt.title("Treino Fase 1 (caixa azul)")
 plt.grid(True)
-plt.savefig("q_learning_fase1_rewards.png")
+plt.savefig("fase1/q_learning_fase1_rewards.png")
 plt.show()
+
+plt.figure()
+plt.plot(tempo_por_ep)
+plt.xlabel("Episódio")
+plt.ylabel("Tempo total (s)")
+plt.title("Tempo por Episódio – Fase 1")
+plt.grid(True)
+plt.savefig("fase1/tempo_fase1.png")
+plt.close()
+
+plt.figure()
+plt.plot(tempo_sucesso_ep)
+plt.xlabel("Episódio com sucesso")
+plt.ylabel("Tempo total (s)")
+plt.title("Tempo por Episódio com Sucesso – Fase 1")
+plt.grid(True)
+plt.savefig("fase1/tempo_sucesso_fase1.png")
+plt.close()

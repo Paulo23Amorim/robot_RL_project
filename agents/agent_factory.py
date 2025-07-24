@@ -17,7 +17,7 @@ def create_agent_for_env(env, fase):
             env.observation_space.nvec[1],  # caixa
             env.observation_space.nvec[2],  # entregas feitas (0 a 4)
         )
-        q_table_path = "q_table_fase1.npy"
+        q_table_path = "fase1/q_table_fase1.npy"
 
     elif fase == "fase2":
         n_states = (
@@ -26,7 +26,7 @@ def create_agent_for_env(env, fase):
             env.observation_space.nvec[2],  # foi processado
             env.observation_space.nvec[3],  # estado máquina B
         )
-        q_table_path = "q_table_fase2.npy"
+        q_table_path = "fase2/q_table_fase2.npy"
         
     elif fase == "fase2_color":
         n_states = (
@@ -46,7 +46,7 @@ def create_agent_for_env(env, fase):
             env.observation_space.nvec[3],  # estado máquina A (0, 1, 2)
             env.observation_space.nvec[4],  # estado máquina B (0, 1, 2)
         )
-        q_table_path = "q_table_fase3_final.npy"
+        q_table_path = "fase3/q_table_fase3_final.npy"
 
     else:
         raise ValueError("Fase inválida. Use 'fase1', 'fase2' ou 'fase3'.")
