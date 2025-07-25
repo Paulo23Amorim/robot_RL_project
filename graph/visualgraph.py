@@ -2,7 +2,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from graph.graph_data import graph
 
-plt.ion()
 
 # Cria o grafo e adiciona as arestas
 G = nx.Graph()
@@ -61,29 +60,6 @@ for node in G.nodes():
     y = y_mapping.get(node, 0)
     pos[node] = (x, y)
 
-# ---------------------------
-# 6. Desenhar o grafo atualizado
-# ---------------------------
-plt.figure(figsize=(13, 10))
-
-# Desenha todas as arestas
-nx.draw_networkx_edges(G, pos)
-
-# Desenha os nós e os rótulos
-nx.draw_networkx_nodes(G, pos, node_size=500, node_color='lightblue')
-nx.draw_networkx_labels(G, pos, font_size=10)
-
-# (Opcional) Rótulos das arestas
-edge_labels = nx.get_edge_attributes(G, 'weight')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
-
-plt.title("Grafo Atualizado com Nós de Mudança de Direção (ST1 e ST2)")
-plt.axis('off')
-plt.show()
-
-fh = open("edgelist.txt", "wb")
-nx.write_edgelist(G, fh)
-
 
 def render_grafo(current_node, carrying=False):
     plt.clf()  # limpa o painel atual, sem fechar a janela
@@ -108,3 +84,19 @@ def render_grafo(current_node, carrying=False):
     plt.axis('off')
     plt.pause(0.5)
 
+# Só desenha o grafo se correr diretamente este ficheiro
+if __name__ == "__main__":
+    plt.figure(figsize=(13, 10))
+
+    nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_nodes(G, pos, node_size=500, node_color='lightblue')
+    nx.draw_networkx_labels(G, pos, font_size=10)
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8)
+
+    plt.title("Grafo Atualizado com Nós de Mudança de Direção (ST1 e ST2)")
+    plt.axis('off')
+    plt.show()
+
+    with open("edgelist.txt", "wb") as fh:
+        nx.write_edgelist(G, fh)

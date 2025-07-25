@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import os
 
 RENDER = False
-N_EPISODES = 50000
+N_EPISODES = 20000
 MAX_STEPS = 100
 
 env = RobotFactoryEnvFase2()

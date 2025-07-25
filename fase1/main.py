@@ -3,7 +3,6 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from envs.robot_factory_env import RobotFactoryEnv
-from agents.q_learning_agent import QLearningAgent
 from agents.agent_factory import create_agent_for_env
 import matplotlib.pyplot as plt
 import os
@@ -11,7 +10,7 @@ import random
 
 
 RENDER = False
-N_EPISODES = 25000
+N_EPISODES = 15000
 MAX_STEPS = 100
 
 env = RobotFactoryEnv()
@@ -20,9 +19,6 @@ n_package_states = env.observation_space.nvec[1]
 n_actions = env.action_space.n
 
 agent, q_table_path = create_agent_for_env(env, fase="fase1")
-
-if os.path.exists("fase1/q_table_fase1.npy"):
-    os.remove("fase1/q_table_fase1.npy")
 
 rewards_per_episode = []
 tempo_por_ep = []
@@ -62,7 +58,9 @@ for episode in range(N_EPISODES):
 
     print(f"📦 Episódio {episode+1} → Recompensa: {total_reward:.2f}, passos: {step_counter}, ε: {agent.epsilon:.3f}")
 
-agent.save("q_table_fase1.npy")
+os.makedirs(os.path.dirname(q_table_path), exist_ok=True)
+agent.save(q_table_path)
+
 
 plt.ioff()
 plt.figure()

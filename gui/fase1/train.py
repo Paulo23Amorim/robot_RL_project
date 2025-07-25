@@ -2,12 +2,12 @@ import os
 import matplotlib.pyplot as plt
 from envs.robot_factory_env import RobotFactoryEnv
 from agents.agent_factory import create_agent_for_env
+from PyQt5.QtWidgets import QApplication
 
-def treinar(epsilon, epsilon_decay, n_episodes):
+def treinar(epsilon, epsilon_decay, n_episodes, grafico_recompensa=None):
     print("[INFO] Executando treino na Fase 1")
     print(f"epsilon = {epsilon}, decay = {epsilon_decay}, episódios = {n_episodes}")
 
-    RENDER = False
     MAX_STEPS = 100
 
     env = RobotFactoryEnv()
@@ -23,13 +23,7 @@ def treinar(epsilon, epsilon_decay, n_episodes):
         total_reward = 0
         step_counter = 0
 
-        if RENDER:
-            plt.figure(figsize=(13, 10))
-
         while not done and step_counter < MAX_STEPS:
-            if RENDER:
-                from graph.visualgraph import render_grafo
-                render_grafo(env.current_node, carrying=env.has_package)
 
             valid_actions = env.get_valid_actions()
             action = agent.select_action(state, valid_actions)
@@ -47,6 +41,10 @@ def treinar(epsilon, epsilon_decay, n_episodes):
         tempos_por_ep.append(env.tempo_total)
         if env.sucesso:
             tempos_sucesso_ep.append(env.tempo_total)
+        if grafico_recompensa:
+            grafico_recompensa.atualizar(total_reward)
+            QApplication.processEvents()
+
 
         print(f"\U0001F4E6 Episódio {episode + 1} → Recompensa: {total_reward:.2f}, passos: {step_counter}, ε: {agent.epsilon:.3f}")
 

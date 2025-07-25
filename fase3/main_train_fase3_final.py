@@ -7,7 +7,7 @@ from agents.agent_factory import create_agent_for_env
 import matplotlib.pyplot as plt
 
 RENDER = False
-N_EPISODES = 100000
+N_EPISODES = 10000
 MAX_STEPS = 100
 
 env = RobotFactoryEnvFase3Color()

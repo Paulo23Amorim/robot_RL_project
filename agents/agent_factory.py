@@ -36,7 +36,7 @@ def create_agent_for_env(env, fase):
             env.observation_space.nvec[3],  # estado máquina B
             env.observation_space.nvec[4],  # cor da peça
         )
-        q_table_path = "q_table_fase2_color.npy"
+        q_table_path = "fase2/q_table_fase2_color.npy"
                 
     elif fase == "fase3_final":
         n_states = (

@@ -1,3 +1,5 @@
+from gui.graph_tempo_real import GraficoTempoReal
+
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
@@ -8,7 +10,7 @@ class RLGui(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RL Robot Factory Controller")
-        self.setFixedSize(400, 350)
+        self.resize(500, 600)
         self.init_ui()
 
     def init_ui(self):
@@ -60,6 +62,10 @@ class RLGui(QWidget):
         self.btn_run = QPushButton("Iniciar")
         self.btn_run.clicked.connect(self.executar)
         layout.addWidget(self.btn_run)
+        
+        # Gráfico de recompensa
+        self.grafico_recompensa = GraficoTempoReal("Recompensa por Episódio", "Recompensa")
+        layout.addWidget(self.grafico_recompensa)
 
         self.setLayout(layout)
 
@@ -77,7 +83,7 @@ class RLGui(QWidget):
             if fase == "Fase 1":
                 if modo == "treinar":
                     from gui.fase1 import train
-                    train.treinar(epsilon=epsilon, epsilon_decay=decay, n_episodes=episodios)
+                    train.treinar(epsilon=epsilon, epsilon_decay=decay, n_episodes=episodios, grafico_recompensa=self.grafico_recompensa)
                 else:
                     from fase1 import main_test
             elif fase == "Fase 2":
